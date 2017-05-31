@@ -69,3 +69,12 @@ python retrain.py \
 1. Download the python code for labeling new images: `curl -L https://goo.gl/3lTKZs > label_image.py`
 2. Copy all files from Docker /tf_files to your local machine: `docker cp <containerId>:/file/path/within/container /host/path/target` For example when you are inside Docker you will see the prompt will be: root@a0428763b71f: and a0428763b71f is the containerId
 3. Locate the /tf_files inside your local machine and use algorithm: `python label_image.py galaxies/blip/[someimage].jpg`
+
+
+![alt text](https://panoptes-uploads.zooniverse.org/production/subject_location/06ff6f06-56d3-4ac6-b184-488fe5d4f1c8.png)
+blip (score = 0.90396)
+none (score = 0.04392)
+koifish (score = 0.03582)
+whistle (score = 0.01581)
+power (score = 0.00035)
+violin (score = 0.00013)
