@@ -70,7 +70,7 @@ python retrain.py \
 2. Copy all files from Docker /tf_files to your local machine: `docker cp <containerId>:/file/path/within/container /host/path/target` For example when you are inside Docker you will see the prompt will be: root@a0428763b71f: and a0428763b71f is the containerId
 3. Locate the /tf_files inside your local machine and use algorithm: `python label_image.py galaxies/blip/[someimage].jpg`
 
-## Reinforsmant learning
+## Reinforcement learning
 - When we are sure an image is a given class, that means when all 4 images are more then 80% sure to be of a specific class, then add it to the Trainset.
 - After that train the algorithm again with the newly added Trainset
 ### How to do that
