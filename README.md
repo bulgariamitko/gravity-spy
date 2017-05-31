@@ -58,4 +58,5 @@ We will use images from https://www.zooniverse.org/projects/zooniverse/gravity-s
 
 ## Work with the newly trained algorithm
 1. Download the python code for labeling new images: `curl -L https://goo.gl/3lTKZs > label_image.py`
-2. Use algorithm: `python label_image.py galaxies/blip/[someimage].jpg`
+2. Copy all files from Docker /tf_files to your local machine: `docker cp <containerId>:/file/path/within/container /host/path/target` For example when you are inside Docker you will see the prompt will be: root@a0428763b71f: and a0428763b71f is the containerId
+3. Locate the /tf_files inside your local machine and use algorithm: `python label_image.py galaxies/blip/[someimage].jpg`
