@@ -58,4 +58,4 @@ We will use images from https://www.zooniverse.org/projects/zooniverse/gravity-s
 
 ## Work with the newly trained algorithm
 1. Download the python code for labeling new images: `curl -L https://goo.gl/3lTKZs > label_image.py`
-2. python label_image.py galaxies/blip/[someimage].jpg
+2. Use algorithm: `python label_image.py galaxies/blip/[someimage].jpg`
