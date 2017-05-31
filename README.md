@@ -53,14 +53,17 @@ We will use images from https://www.zooniverse.org/projects/zooniverse/gravity-s
 7. Unzipping the folder: `tar xvf galaxies.tar`
 8. Download retrain.py in order to train algorithm: `curl -O https://raw.githubusercontent.com/tensorflow/tensorflow/r1.1/tensorflow/examples/image_retraining/retrain.py`
 9. OPTIONAL STEP: In order to see how the algorithm is trained you need to run this code: `tensorboard --logdir training_summaries &`
-10. Train the algorithm: ```python retrain.py \
+10. Train the algorithm:
+```
+python retrain.py \
   --bottleneck_dir=bottlenecks \
   --how_many_training_steps=500 \
   --model_dir=inception \
   --summaries_dir=training_summaries/basic \
   --output_graph=retrained_graph.pb \
   --output_labels=retrained_labels.txt \
-  --image_dir=galaxies```
+  --image_dir=galaxies
+```
 
 ## Work with the newly trained algorithm
 1. Download the python code for labeling new images: `curl -L https://goo.gl/3lTKZs > label_image.py`
