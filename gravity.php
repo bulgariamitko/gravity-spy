@@ -19,16 +19,40 @@ $response = $client->request(
     ]
 );
 
+$dir = 'testImages' . DIRECTORY_SEPARATOR;
+$it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+$files = new RecursiveIteratorIterator($it,
+             RecursiveIteratorIterator::CHILD_FIRST);
+foreach($files as $file) {
+    if ($file->isDir()){
+        rmdir($file->getRealPath());
+    } else {
+        unlink($file->getRealPath());
+    }
+}
+rmdir($dir);
+
+
+// delete all files
+// $files = glob('testImages/*'); // get all file names
+// foreach($files as $img){ // iterate files
+//   if(is_file($img))
+//     unlink($img); // delete file
+// }
+
 $result = json_decode($response->getBody());
 
+// $i = 0;
 foreach ($result as $value) {
 	// echo "<pre>";
 	// print_r($value);
 	// echo "</pre>";
 	foreach ($value as $value2) {
-		// echo "<pre>";
-		// print_r($value2);
-		// echo "</pre>";
+		echo "<pre>";
+		print_r($value2->href);
+		echo "</pre>";
+		$subject = filter_var($value2->href, FILTER_SANITIZE_NUMBER_INT);
+		mkdir('testImages/' . $subject, 0777, true);
 		foreach ($value2 as $value3) {
 			// echo "<pre>";
 			// print_r($value3);
@@ -41,10 +65,17 @@ foreach ($result as $value) {
 					echo "<pre>";
 					print_r($value5);
 					echo "</pre>";
-					$link= $value5;
-					$destdir = 'testImages/';
-					$img=file_get_contents($link);
-					file_put_contents($destdir.substr($link, strrpos($link,'/')), $img);
+					echo "<div><img src='" . $value5 . "' width='200'></div>";
+					$link = $value5;
+					$destdir = 'testImages';
+					$img = file_get_contents($link);
+					// put the subject of the 4 imgs inside a folder
+					file_put_contents($destdir. DIRECTORY_SEPARATOR . $subject . substr($link, strrpos($link,'/')), $img);
+
+					// if ($i == 1) {
+					// 	exit;
+					// }
+					// $i++;
 				}
 			}
 		}
