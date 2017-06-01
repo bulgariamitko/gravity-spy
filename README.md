@@ -62,17 +62,29 @@ python retrain.py \
   --image_dir=Trainset
 ```
 8. Download `tf_files` from docker dontainer to local machine: docker cp `containerId`:/tf_files /tf_files [i had some issue with this step, but it should work]
+9. Download the python code for labeling new images: `curl -L https://goo.gl/3lTKZs > label_image.py`
 
-## Work with the newly trained algorithm
-1. Download the python code for labeling new images: `curl -L https://goo.gl/3lTKZs > label_image.py`
-2. Copy all files from Docker /tf_files to your local machine: `docker cp <containerId>:/file/path/within/container /host/path/target` For example when you are inside Docker you will see the prompt will be: root@a0428763b71f: and a0428763b71f is the containerId
-3. Locate the /tf_files inside your local machine and use algorithm: `python label_image.py Trainset/blip/[someimage].jpg`
+## Use the newly trained algorithm
+- Locate the /tf_files inside your local machine and use: `python label_image.py Trainset/blip/[someimage].jpg`. As a result you should get that this image is blip
+
 
 ## Reinforcement learning
-- When we are sure an image is a given class, that means when all 4 images are more then 80% sure to be of a specific class, then add it to the Trainset.
-- After that train the algorithm again with the newly added Trainset
-### How to do that
-1. Copy the image we are sure it is of a given class to the docker of the given class. Example: `docker cp testImages/fe60d99e-c8ec-4a59-a00b-7c7f44b484a3.jpg b1d858f2edc6:/tf_files`
+- When we are sure an image is a given class, that means when all 4 images are more then 50% sure to be of a specific class OR we have an image that is more then 90% sure that is of a curtain class, then add it to the Trainset/[the class that the algorithm have desided those 4 images have to go]
+- After that train the algorithm again with the newly added images in the Trainset
+
+# gravity.php
+The perpose of this file to collect images from https://www.zooniverse.org/projects/zooniverse/gravity-spy/ website and put them into folders with the name of the `subject`. The subject is used to group 4 images of the same type in one. We are using this subject number and we are creating 10 folders with each folder having inside 4 images which all images should be the same class. The only difference of those images are that they are of different measuring size, but they are all belong to one class. What is the code doing:
+1. Using Guzzle to get all 40 images grouping them by there subject number
+2. Deleting all images and folders in the folder 'testImages'
+3. Saving all 40 images in 10 folders with the name of the subject and each folder containing 4 images.
+
+# gravity2.php
+This file is the second stage in the API im building of automatically providing the correct classification using deep learning with TensorFlow. What is the code doing:
+1. Converting all images from png to jpg as all images have to be in jpg format
+2. Deleting all png images as we dont need them anymore
+3. Displaying every image and calculating using the algorithm what class this image belong to
+4. At every 4 images (the whole folder) decide whatever those 4 images belong to a class or not. The desition is base on whatever all images belong to 1 class and the averange proccent of all 4 images is more then 50% OR if the algorithm decide that there is one image that is more then 90% of a certain class. Then it is copying all 4 images to the folder tf_files/Trainset/[the class the algorithm decided this image belongs]
+5. Put all subjects into one json file as an array so when there is the same subject the code is not retraining again on the same images. The file is located at results/results.json
 
 ## Results
 <img src='https://panoptes-uploads.zooniverse.org/production/subject_location/06ff6f06-56d3-4ac6-b184-488fe5d4f1c8.png' width='200'>
