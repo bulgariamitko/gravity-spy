@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Galaxy</title>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+</head>
+<body>
 <?php
 require 'vendor/autoload.php';
 
@@ -81,3 +89,12 @@ foreach ($result as $value) {
 		}
 	}
 }
+
+?>
+<script type="text/javascript">
+$(window).on('load', function () {
+	window.location = 'gravity2.php';
+});
+</script>
+</body>
+</html>
