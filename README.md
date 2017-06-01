@@ -11,7 +11,7 @@ This is a gravity-spy image classifier using TensorFlow
 - TensorFlow
 - Imagemagick
 
-## Installentions
+## Installations
 1. Python: https://www.python.org/downloads/
 2. Imagemagick: https://www.imagemagick.org/script/download.php
 3. Docker: https://www.docker.com/community-edition. Check if you have installed Docker with:
