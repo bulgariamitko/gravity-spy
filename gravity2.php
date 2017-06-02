@@ -133,9 +133,9 @@ foreach ($files as $fileName => $file) {
 
 <!-- COMMENT THIS CODE IF YOU WANT TO STOP THE LOOP -->
 <script type="text/javascript">
-$(window).on('load', function () {
-    window.location = 'gravity.php';
-});
+// $(window).on('load', function () {
+//     window.location = 'gravity.php';
+// });
 </script>
 </body>
 </html>
