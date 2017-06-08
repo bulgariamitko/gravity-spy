@@ -24,15 +24,20 @@ $classes = [];
 $classScore = [];
 $imgs = [];
 
+// find already sended subjects
+$sendResults = json_decode(file_get_contents("results/sendResults.json"), true);
+
 // classifier
 foreach ($files as $fileName => $file) {
     // if ($i == 6) {
-    // 	break;
+    //  break;
     // }
-    if (!$file->isDir()) {
-        $info = new SplFileInfo($fileName);
-        $fileName = $info->getFilename();
+    $info = new SplFileInfo($fileName);
+    $fileName = $info->getFilename();
 
+    // find subject number
+    $subject =  preg_replace("/[^0-9]+/", "", $info->getPath());
+    if (!$file->isDir() && !array_key_exists($subject, $sendResults)) {
         // store file into the array of 4 files
         array_push($imgs, $fileName);
 
@@ -61,17 +66,16 @@ foreach ($files as $fileName => $file) {
         // echo "</pre>";
     }
 
-    if ($i % 4 == 0) {
+    if ($i % 4 == 0 && !array_key_exists($subject, $sendResults)) {
         $average = array_sum($classScore) / count($classScore);
         $unique = count(array_unique($classes));
-
-        $subject =  preg_replace("/[^0-9]+/", "", $info->getPath());
+        
         // if all classes are the same class and the average is more then 50% then store it OR we have one image that is more then 90% sure of a class
-        if ($unique == 1 && $average > 0.50 || max($classScore) > 0.9) {
+        if ($unique == 1 && ($average > 0.50 || max($classScore) > 0.9)) {
             $maxes = array_keys($classScore, max($classScore));
             $selectedClassName = $classes[$maxes[0]];
             echo "<pre>";
-            print_r($selectedClassName);
+            print_r("Subject: " . $subject . ", Class: " . strtoupper($selectedClassName));
             echo "</pre>";
 
             $storedResults = json_decode(file_get_contents("results/results.json"), true);
@@ -84,25 +88,14 @@ foreach ($files as $fileName => $file) {
                     shell_exec('cp testImages/' . $subject . '/' . $img . ' tf_files/Trainset/' . $selectedClassName . '/' . $img);
                 }
 
-                // train the algorithm
-                $shell = shell_exec('cd tf_files/; python retrain.py \
-				  --bottleneck_dir=bottlenecks \
-				  --how_many_training_steps=500 \
-				  --model_dir=inception \
-				  --summaries_dir=training_summaries/basic \
-				  --output_graph=retrained_graph.pb \
-				  --output_labels=retrained_labels.txt \
-				  --image_dir=Trainset');
-                
-                echo "<pre>";
-                print_r($shell);
-                echo "</pre>";
-
                 // store subjects inside a json file
                 $storedResults[$subject] = $selectedClassName;
                 file_put_contents("results/results.json", json_encode($storedResults));
             }
         } else {
+            echo "<pre>";
+            print_r("Subject: " . $subject);
+            echo "</pre>";
             $buildLink = '';
             for ($i=0; $i < count($imgs); $i++) {
                 $buildLink .= 'img' . $i . '=' . $imgs[$i] . "&";
@@ -129,13 +122,27 @@ foreach ($files as $fileName => $file) {
         $i++;
     }
 }
+// train the algorithm
+$shell = shell_exec('cd tf_files/; python retrain.py \
+  --bottleneck_dir=bottlenecks \
+  --how_many_training_steps=500 \
+  --model_dir=inception \
+  --summaries_dir=training_summaries/basic \
+  --output_graph=retrained_graph.pb \
+  --output_labels=retrained_labels.txt \
+  --image_dir=Trainset');
+
+echo "<pre>";
+print_r($shell);
+echo "</pre>";
+
 ?>
 
 <!-- COMMENT THIS CODE IF YOU WANT TO STOP THE LOOP -->
 <script type="text/javascript">
-// $(window).on('load', function () {
-//     window.location = 'gravity.php';
-// });
+$(window).on('load', function () {
+    window.location = 'gravity.php';
+});
 </script>
 </body>
 </html>

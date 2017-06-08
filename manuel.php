@@ -13,21 +13,22 @@ if (!empty($_GET['img0']) && !empty($_GET['img1']) && !empty($_GET['img2']) && !
 		shell_exec('cp testImages/' . $_GET['subject'] . '/' . $_GET['img3'] . ' tf_files/Trainset/' . $_GET['class'] . '/' . $_GET['img3']);
 
 		// train the algorithm
-		$shell = shell_exec('cd tf_files/; python retrain.py \
-		  --bottleneck_dir=bottlenecks \
-		  --how_many_training_steps=500 \
-		  --model_dir=inception \
-		  --summaries_dir=training_summaries/basic \
-		  --output_graph=retrained_graph.pb \
-		  --output_labels=retrained_labels.txt \
-		  --image_dir=Trainset');
+		// $shell = shell_exec('cd tf_files/; python retrain.py \
+		//   --bottleneck_dir=bottlenecks \
+		//   --how_many_training_steps=500 \
+		//   --model_dir=inception \
+		//   --summaries_dir=training_summaries/basic \
+		//   --output_graph=retrained_graph.pb \
+		//   --output_labels=retrained_labels.txt \
+		//   --image_dir=Trainset');
 		
-		echo "<pre>";
-		print_r($shell);
-		echo "</pre>";
+		// echo "<pre>";
+		// print_r($shell);
+		// echo "</pre>";
 
 		// store subjects inside a json file
 		$storedResults[$_GET['subject']] = $_GET['class'];
 		file_put_contents("results/results.json", json_encode($storedResults));
+		echo "<h1>DONE!</h1>";
 	}
 }
