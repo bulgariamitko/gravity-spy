@@ -56,6 +56,8 @@ rmdir($dir);
 // }
 $destdir = 'testImages';
 $result = json_decode($response->getBody());
+// find already labaled subjects from zooinverse
+$labaled = json_decode(file_get_contents("results/labelsFromZooniverse.json"), true);
 // $i = 0;
 foreach ($result as $value) {
 	// echo "<pre>";
@@ -67,10 +69,14 @@ foreach ($result as $value) {
 		// echo "</pre>";
 		$subject = filter_var($value2->href, FILTER_SANITIZE_NUMBER_INT);
 		mkdir($destdir . DIRECTORY_SEPARATOR . $subject, 0777, true);
-		echo "<h3>" . $subject . ' Label: ' . ($value2->metadata->{'#Label'} ?? '') . "</h3>";
-		// if (!empty($value2->metadata->{'#Label'})) {
-		// 	file_put_contents($destdir. DIRECTORY_SEPARATOR . $subject . DIRECTORY_SEPARATOR . $value2->metadata->{'#Label'}, '');
-		// }
+		$label = $value2->metadata->{'#Label'} ?? '';
+		echo "<h3>" . $subject . ' Label: ' . $label . "</h3>";
+		if (!empty($label)) {
+			// store subjects inside a json file
+            $labaled[$subject] = $label;
+            file_put_contents("results/labelsFromZooniverse.json", json_encode($labaled));
+			// file_put_contents($destdir. DIRECTORY_SEPARATOR . $subject . DIRECTORY_SEPARATOR . $value2->metadata->{'#Label'}, '');
+		}
 		// file_put_contents($destdir. DIRECTORY_SEPARATOR . $subject . substr($link, strrpos($link,'/')), '');
 		// if (!empty($value2->metadata->{'#Label'})) echo " Label: " . $value2->metadata->{'#Label'};
 		foreach ($value2 as $value3) {

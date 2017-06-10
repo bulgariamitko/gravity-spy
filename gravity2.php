@@ -27,6 +27,8 @@ $imgs = [];
 
 // find already sended subjects
 $results = json_decode(file_get_contents("results/results.json"), true);
+// find already labaled subjects from zooinverse
+$labaled = json_decode(file_get_contents("results/labelsFromZooniverse.json"), true);
 // if there is no new subjects then dont retrain the algorithm!!!
 $newSubjects = false;
 
@@ -88,9 +90,9 @@ foreach ($files as $fileName => $file) {
         if ($unique == 1 && ($average > 0.50 || max($classScore) > 0.9)) {
             $maxes = array_keys($classScore, max($classScore));
             $selectedClassName = $classes[$maxes[0]];
-            echo "<pre>";
-            print_r("Subject: " . $subject . ", Class: " . strtoupper($selectedClassName));
-            echo "</pre>";
+
+            // echo Subject + Class + label from zooinverse if any
+            echo "<h3>Subject: " . $subject . ", Class: " . strtoupper($selectedClassName) . ", Label from Zooinverse: " . (array_key_exists($subject, $labaled) ? $labaled[$subject] : '') . "</h3>";
 
             $storedResults = json_decode(file_get_contents("results/results.json"), true);
 
