@@ -109,9 +109,7 @@ foreach ($files as $fileName => $file) {
                 file_put_contents("results/results.json", json_encode($storedResults));
             }
         } else {
-            echo "<pre>";
-            print_r("Subject: " . $subject);
-            echo "</pre>";
+            echo "<h3>Subject: " . $subject . ", Label from Zooinverse: " . (array_key_exists($subject, $labaled) ? $labaled[$subject] : '') . "</h3>";
             $buildLink = '';
             for ($i=0; $i < count($imgs); $i++) {
                 $buildLink .= 'img' . $i . '=' . $imgs[$i] . "&";
