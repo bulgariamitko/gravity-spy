@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Galaxy part 2</title>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 </head>
 <body>
 <?php
@@ -25,7 +26,9 @@ $classScore = [];
 $imgs = [];
 
 // find already sended subjects
-$sendResults = json_decode(file_get_contents("results/sendResults.json"), true);
+$results = json_decode(file_get_contents("results/results.json"), true);
+// if there is no new subjects then dont retrain the algorithm!!!
+$newSubjects = false;
 
 // classifier
 foreach ($files as $fileName => $file) {
@@ -37,18 +40,29 @@ foreach ($files as $fileName => $file) {
 
     // find subject number
     $subject =  preg_replace("/[^0-9]+/", "", $info->getPath());
-    if (!$file->isDir() && !array_key_exists($subject, $sendResults)) {
+    if (!$file->isDir() && !array_key_exists($subject, $results)) {
+        // new subject found, please train the algorithm:
+        $newSubjects = true;
         // store file into the array of 4 files
         array_push($imgs, $fileName);
 
         // tensorflow algorithm
         $changedFile = str_replace('jpg', 'png', $fileName);
-        echo "<div><img src='https://panoptes-uploads.zooniverse.org/production/subject_location/" . $changedFile . "' width='200'" . $changedFile . "</div>";
+        $linkToImg = 'https://panoptes-uploads.zooniverse.org/production/subject_location/' . $changedFile;
+
+
         // classifier
         $shellCommand3 = shell_exec('cd tf_files/; python label_image.py ../' . $info->getPath() . '/' . $fileName);
-        echo "<pre>";
-        print_r($shellCommand3);
-        echo "</pre>";
+        // echo "<pre>";
+        // print_r($shellCommand3);
+        // echo "</pre>";
+
+        echo "<a href='" . $linkToImg . "' target='_blank'>";
+            echo "<figure class='figure col-md-3'>";
+                echo "<img src='" . $linkToImg . "' class='figure-img img-fluid rounded' alt='A generic square placeholder image with rounded corners in a figure.'>";
+                echo "<figcaption class='figure-caption'>" . $changedFile . ' <br>' . preg_replace("/\)/", ")<br>", $shellCommand3) . "</figcaption>";
+            echo "</figure>";
+        echo "</a>";
 
         // getting the result as CLASS and SCORE
         $result = explode("\n", $shellCommand3)[0];
@@ -66,7 +80,7 @@ foreach ($files as $fileName => $file) {
         // echo "</pre>";
     }
 
-    if ($i % 4 == 0 && !array_key_exists($subject, $sendResults)) {
+    if ($i % 4 == 0 && !array_key_exists($subject, $results)) {
         $average = array_sum($classScore) / count($classScore);
         $unique = count(array_unique($classes));
         
@@ -122,20 +136,21 @@ foreach ($files as $fileName => $file) {
         $i++;
     }
 }
-// train the algorithm
-$shell = shell_exec('cd tf_files/; python retrain.py \
-  --bottleneck_dir=bottlenecks \
-  --how_many_training_steps=500 \
-  --model_dir=inception \
-  --summaries_dir=training_summaries/basic \
-  --output_graph=retrained_graph.pb \
-  --output_labels=retrained_labels.txt \
-  --image_dir=Trainset');
+// train the algorithm only if there are new subjects found
+if ($newSubjects) {
+    $shell = shell_exec('cd tf_files/; python retrain.py \
+      --bottleneck_dir=bottlenecks \
+      --how_many_training_steps=500 \
+      --model_dir=inception \
+      --summaries_dir=training_summaries/basic \
+      --output_graph=retrained_graph.pb \
+      --output_labels=retrained_labels.txt \
+      --image_dir=Trainset');
 
-echo "<pre>";
-print_r($shell);
-echo "</pre>";
-
+    echo "<pre>";
+    print_r($shell);
+    echo "</pre>";
+}
 ?>
 
 <!-- COMMENT THIS CODE IF YOU WANT TO STOP THE LOOP -->
