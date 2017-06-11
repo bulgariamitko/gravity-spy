@@ -86,11 +86,11 @@ This file is the second stage in the API im building of automatically providing 
 1. Converting all images from png to jpg as all images have to be in jpg format
 2. Deleting all png images as we dont need them anymore
 3. Displaying every image and calculating using the algorithm what class this image belong to
-4. At every 4 images (the whole folder) decide whatever those 4 images belong to a class or not. The decition is base on whatever all images belong to 1 class and the average percent of all 4 images is more then 50% OR if the algorithm decide that there is one image that is more then 90% of a certain class. Then it is copying all 4 images to the folder tf_files/Trainset/[the class the algorithm decided this image belongs]
+4. At every 4 images (the whole folder) decide whatever those 4 images belong to a class or not. The decision is base on whatever all images belong to 1 class and the average percent of all 4 images is more then 50% OR if the algorithm decide that there is one image that is more then 90% of a certain class. Then it is copying all 4 images to the folder tf_files/Trainset/[the class the algorithm decided this image belongs]
 5. Put all subjects into one json file as an array so when there is the same subject the code is not retraining again on the same images. The file is located at results/results.json
 
 # sendData.php
-This file is used for sending the data to the server. This is very important page and when you have researched some subjects and assine them to there current class you can use this file to send the data to the server. The file is using curl, but it will be good if i do it using Guzzle as i was not able to see how to send the raw json data with the request. Code flow:
+This file is used for sending the data to the server. This is very important page and when you have researched some subjects and assign them to there current class you can use this file to send the data to the server. The file is using curl, but it will be good if i do it using Guzzle as i was not able to see how to send the raw json data with the request. Code flow:
 1. Checking which subjects are NOT send to the server already
 2. Send data using curl to the server with the current date and time, subject ID and class name
 3. When the data is successfully sand store the subject and class name to the json file results/sendResults.json
