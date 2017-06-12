@@ -89,7 +89,6 @@ foreach ($result->subjects as $subjectDetails) {
 	}
 	echo "<hr>";
 }
-exit;
 ?>
 <script type="text/javascript">
 $(window).on('load', function () {
