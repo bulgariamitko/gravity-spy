@@ -4,6 +4,9 @@ Today machine learning, deep learning and thanks to TensorFlow you dont need any
 # About
 This is a gravity-spy image classifier using TensorFlow for https://www.zooniverse.org/projects/zooniverse/gravity-spy/classify. The Zooniverse is the world’s largest and most popular platform for people-powered research. The project that this repo is about is for Gravity Spy which is trying to prove Albert Einstein who predicted that accelerating masses create ripples that propagate through the fabric of space time known as gravitational waves. You can read more about it here: https://www.zooniverse.org/projects/zooniverse/gravity-spy/about/research and also read those research papers here: https://arxiv.org/pdf/1611.04596.pdf and here https://arxiv.org/pdf/1705.00034.pdf
 
+# How i build this
+There are videos how i have build this project. You can watch them from here https://www.liveedu.tv/bulgaria_mitko/ZeLkP-learning-tensorflow-for-begginers/xWLzE-learning-tensorflow-for-begginers/
+
 ## Referrence used in this code
 - https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/?utm_campaign=chrome_series_machinelearning_063016&utm_source=gdev&utm_medium=yt-desc#0
 
