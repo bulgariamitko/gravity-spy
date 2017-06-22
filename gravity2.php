@@ -107,6 +107,25 @@ foreach ($files as $fileName => $file) {
                 // store subjects inside a json file
                 $storedResults[$subject] = $selectedClassName;
                 file_put_contents("results/results.json", json_encode($storedResults));
+
+                // update already sended subjects
+                $results = json_decode(file_get_contents("results/results.json"), true);
+                echo "<h3>Algorithm will train in... " . (count($results) % 50) . "</h3>";
+                // train the algorithm only if there are new subjects found
+                if ($newSubjects && count($results) % 50 == 0) {
+                    $shell = shell_exec('cd tf_files/; python retrain.py \
+                      --bottleneck_dir=bottlenecks \
+                      --how_many_training_steps=500 \
+                      --model_dir=inception \
+                      --summaries_dir=training_summaries/basic \
+                      --output_graph=retrained_graph.pb \
+                      --output_labels=retrained_labels.txt \
+                      --image_dir=Trainset');
+
+                    echo "<pre>";
+                    print_r($shell);
+                    echo "</pre>";
+                }
             }
         } else {
             echo "<h3>Subject: " . $subject . ", Label from Zooinverse: " . (array_key_exists($subject, $labaled) ? $labaled[$subject] : '') . "</h3>";
@@ -136,21 +155,7 @@ foreach ($files as $fileName => $file) {
         $i++;
     }
 }
-// train the algorithm only if there are new subjects found
-if ($newSubjects) {
-    $shell = shell_exec('cd tf_files/; python retrain.py \
-      --bottleneck_dir=bottlenecks \
-      --how_many_training_steps=500 \
-      --model_dir=inception \
-      --summaries_dir=training_summaries/basic \
-      --output_graph=retrained_graph.pb \
-      --output_labels=retrained_labels.txt \
-      --image_dir=Trainset');
 
-    echo "<pre>";
-    print_r($shell);
-    echo "</pre>";
-}
 ?>
 
 <!-- COMMENT THIS CODE IF YOU WANT TO STOP THE LOOP -->

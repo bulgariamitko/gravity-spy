@@ -58,6 +58,8 @@ $destdir = 'testImages';
 $result = json_decode($response->getBody());
 // find already labaled subjects from zooinverse
 $labaled = json_decode(file_get_contents("results/labelsFromZooniverse.json"), true);
+// find already sended subjects
+$results = json_decode(file_get_contents("results/results.json"), true);
 // $i = 0;
 // echo "<pre>";
 // print_r($result->subjects);
@@ -65,29 +67,32 @@ $labaled = json_decode(file_get_contents("results/labelsFromZooniverse.json"), t
 
 foreach ($result->subjects as $subjectDetails) {
 	$subject = filter_var($subjectDetails->href, FILTER_SANITIZE_NUMBER_INT);
-	mkdir($destdir . DIRECTORY_SEPARATOR . $subject, 0777, true);
-	$label = $subjectDetails->metadata->{'#Label'} ?? '';
-	echo "<h3>" . $subject . ' Label: ' . $label . "</h3>";
-	if (!empty($label)) {
-		// store subjects inside a json file
-        $labaled[$subject] = $label;
-        file_put_contents("results/labelsFromZooniverse.json", json_encode($labaled));
+	// if the subject is already send, then skip images 
+	if (!array_key_exists($subject, $results)) {
+		$label = $subjectDetails->metadata->{'#Label'} ?? '';
+		echo "<h3>Subject: " . $subject . ' Label: ' . $label . "</h3>";
+		mkdir($destdir . DIRECTORY_SEPARATOR . $subject, 0777, true);
+		if (!empty($label)) {
+			// store subjects inside a json file
+	        $labaled[$subject] = $label;
+	        file_put_contents("results/labelsFromZooniverse.json", json_encode($labaled));
+		}
+		foreach ($subjectDetails->locations as $image) {
+			$link = $image->{'image/png'};
+			$img = file_get_contents($link);
+			// put the subject of the 4 imgs inside a folder
+			file_put_contents($destdir. DIRECTORY_SEPARATOR . $subject . substr($link, strrpos($link,'/')), $img);
+			// show images
+			$imgFileName = str_replace(['/', '.png'], '', substr($link, strrpos($link,'/')));
+			echo "<a href='" . $link . "' target='_blank'>";
+				echo "<figure class='figure col-md-3'>";
+					echo "<img src='" . $link . "' class='figure-img img-fluid rounded' alt='A generic square placeholder image with rounded corners in a figure.'>";
+					echo "<figcaption class='figure-caption'>" . $imgFileName . "</figcaption>";
+				echo "</figure>";
+		    echo "</a>";
+		}
+		echo "<hr>";
 	}
-	foreach ($subjectDetails->locations as $image) {
-		$link = $image->{'image/png'};
-		$img = file_get_contents($link);
-		// put the subject of the 4 imgs inside a folder
-		file_put_contents($destdir. DIRECTORY_SEPARATOR . $subject . substr($link, strrpos($link,'/')), $img);
-		// show images
-		$imgFileName = str_replace(['/', '.png'], '', substr($link, strrpos($link,'/')));
-		echo "<a href='" . $link . "' target='_blank'>";
-			echo "<figure class='figure col-md-3'>";
-				echo "<img src='" . $link . "' class='figure-img img-fluid rounded' alt='A generic square placeholder image with rounded corners in a figure.'>";
-				echo "<figcaption class='figure-caption'>" . $imgFileName . "</figcaption>";
-			echo "</figure>";
-	    echo "</a>";
-	}
-	echo "<hr>";
 }
 ?>
 <script type="text/javascript">
