@@ -35,6 +35,10 @@ $response = $client->request(
 );
 
 $dir = 'testImages' . DIRECTORY_SEPARATOR;
+// if there is no folder create it
+if (!is_dir($dir)) {
+    mkdir($dir);         
+}
 $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
 $files = new RecursiveIteratorIterator($it,
              RecursiveIteratorIterator::CHILD_FIRST);

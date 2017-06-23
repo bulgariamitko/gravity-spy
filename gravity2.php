@@ -8,6 +8,11 @@
 </head>
 <body>
 <?php
+$dir = 'testImages' . DIRECTORY_SEPARATOR;
+
+if (!is_dir($dir)) {
+    header("Location: gravity.php");
+}
 
 // convert images from png to jpg
 $shellCommand1 = shell_exec('mogrify -format jpg testImages/*/*.png');
@@ -16,7 +21,6 @@ $shellCommand2 = shell_exec('rm testImages/*/*.png');
 
 $i = 1;
 
-$dir = 'testImages' . DIRECTORY_SEPARATOR;
 $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
 $files = new RecursiveIteratorIterator($it,
              RecursiveIteratorIterator::CHILD_FIRST);
