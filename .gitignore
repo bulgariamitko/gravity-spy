@@ -2,3 +2,5 @@ tf_files/
 vendor/
 note_modules/
 testImages/
+learning/
+env.php
